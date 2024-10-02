@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History 
+{% endblock %}
+
+{% block main %}
+<h3> Completed Tasks </h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="text-start">Name</th>
+                <th class="text-end">Description</th>
+                <th class="text-end">Completed</th>
+                <th class="text-end">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in history %}
+            <tr>
+                <td class="text-start">
+                    {{ task.1 }}
+                </td>
+                <td class="text-end">
+                    {{ task.2 }}
+                </td>
+                <td class="text-end">
+                    {{ task.3 }}
+                </td>
+                <td class="text-end">
+                    <form action="/deleteHistory" method="post">
+                        <input type="hidden" name="del" value="{{ task.0 }}">
+                        <button class="btn btn-outline-secondary" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
