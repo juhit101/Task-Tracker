@@ -3,7 +3,6 @@ from flask import Flask, flash, redirect, render_template, request, session
 import sqlite3
 import datetime
 
-
 # configure application
 app = Flask(__name__)
 
@@ -92,14 +91,17 @@ def updated():
         id = request.form['edit']
         task = db.execute("SELECT * FROM tasks WHERE id = ?", [id])
         name = request.form.get("name")
+        if not name:
+            tasks = db.execute("SELECT * FROM tasks ORDER BY time ASC")
+            return render_template("index.html", nameError = "Must enter name of task", tasks=tasks)
         description = request.form.get("description")
         date = request.form.get("date")
 
         #update sql entry with newly input info
 
-        db.execute("UPDATE tasks SET name = ? WHERE id = ?", name [id])
-        db.execute("UPDATE tasks SET description = ? WHERE id = ?", description, [id])
-        db.execute("UPDATE tasks SET time = ? WHERE id = ?", date, [id])
+        db.execute("UPDATE tasks SET name = ? WHERE id = ?", (name, id))
+        db.execute("UPDATE tasks SET description = ? WHERE id = ?", (description, id))
+        db.execute("UPDATE tasks SET time = ? WHERE id = ?", (date, id))
 
         return redirect("/")
     
