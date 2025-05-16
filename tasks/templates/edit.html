@@ -8,17 +8,17 @@
     <h3>Edit Task</h3>
     <td class="text-end">
         <form action="/updated" method="post">
-            <input type="hidden" name="edit" value="{{ task.0 }}">
             {% for element in task %}
+            <input type="hidden" name="update" value="{{ element.0 }}">
+            {{ nameError }}
             <div class="mb-3">
                 <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="name" placeholder={{element.1}} type="text">
             </div>
-            {{ nameError }}
             <div class="mb-3">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="description" placeholder= {{element.2}} type="text">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="description" placeholder= "{{element.2}}" type="text">
             </div>
             <div class="mb-3">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="date" type="date" placeholder = {{element.3}}>
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="date" placeholder = "{{ element.3 }}" onfocus="(this.type='date')" onblur="(this.type='text')" type="date">
             </div>
             <button class="btn btn-light" type="submit">Finish Editing</button>
             {% endfor %}
