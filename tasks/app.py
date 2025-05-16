@@ -38,7 +38,7 @@ def index():
 
 @app.route("/history")
 def history():
-    history = db.execute("SELECT * FROM history ORDER BY time ASC")
+    history = db.execute("SELECT * FROM history ORDER BY time DESC")
     return render_template("history.html", history=history)
 
 @app.route("/done", methods=["GET", "POST"])
@@ -72,13 +72,9 @@ def deleteHistory():
 
         return redirect("/history")
     
-# make two different routes for the 2 posts
-    
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
-    print(request.method)
     if request.method == "POST":
-
         id = request.form['edit']
         task = db.execute("SELECT * FROM tasks WHERE id = ?", [id])
         return render_template("edit.html", task=task)
@@ -87,21 +83,17 @@ def edit():
 @app.route("/updated", methods=["POST"])
 def updated():
     if request.method == "POST":
-
         id = request.form['edit']
         task = db.execute("SELECT * FROM tasks WHERE id = ?", [id])
         name = request.form.get("name")
         if not name:
-            tasks = db.execute("SELECT * FROM tasks ORDER BY time ASC")
-            return render_template("index.html", nameError = "Must enter name of task", tasks=tasks)
+            task = db.execute("SELECT * FROM tasks WHERE id = ?", [id])
+            return render_template("edit.html", nameError = "Must enter name of task", task=task)
         description = request.form.get("description")
         date = request.form.get("date")
-
         #update sql entry with newly input info
-
-        db.execute("UPDATE tasks SET name = ? WHERE id = ?", (name, id))
-        db.execute("UPDATE tasks SET description = ? WHERE id = ?", (description, id))
-        db.execute("UPDATE tasks SET time = ? WHERE id = ?", (date, id))
+        db.execute("UPDATE tasks SET name = ?, description = ?, time = ? WHERE id = ?", [name, description, date, id])
+        connection.commit()
 
         return redirect("/")
     
