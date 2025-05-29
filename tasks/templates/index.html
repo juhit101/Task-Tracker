@@ -1,72 +1,101 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} {% block title %} Index {% endblock %} {% block main %}
 
-{% block title %}
-    Index 
-{% endblock %}
+<h3>Enter Task</h3>
+<form action="/" method="post">
+  <div class="mb-3">
+    <input
+      autocomplete="off"
+      autofocus
+      class="form-control mx-auto w-auto"
+      name="name"
+      placeholder="Enter Name"
+      type="text"
+    />
+  </div>
+  {{ nameError }}
+  <div class="mb-3">
+    <input
+      autocomplete="off"
+      autofocus
+      class="form-control mx-auto w-auto"
+      name="description"
+      placeholder="Enter description"
+      type="text"
+    />
+  </div>
+  <div class="mb-3">
+    <input
+      autocomplete="off"
+      autofocus
+      class="form-control mx-auto w-auto"
+      name="date"
+      type="date"
+    />
+  </div>
+  <button class="btn btn-light" type="submit">Enter Task</button>
+</form>
 
-{% block main %}
+<br />
 
-    <h3>Enter Task</h3>
-    <form action="/" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="name" placeholder="Enter Name" type="text">
-        </div>
-        {{ nameError }}
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="description" placeholder="Enter description" type="text">
-        </div>
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="date" type="date">
-        </div>
-        <button class="btn btn-light" type="submit">Enter Task</button>
-    </form>
+<form action="/sort" method="post">
+  <div class="input-group mb-3" style="width: 20em">
+    <select
+      class="form-select"
+      style="width: auto"
+      name="sort"
+      aria-label="Sort By"
+    >
+      <option name="sort" value="1">Alphabetical: A - Z</option>
+      <option name="sort" value="2">ALphabetical: Z - A</option>
+      <option name="sort" value="3">Deadline: Closest - Furthest</option>
+      <option name="sort" value="4">Deadline: Furthest - Closest</option>
+    </select>
+    <span class="input-group-btn">
+      <button class="btn btn-light" type="submit">Sort</button>
+    </span>
+  </div>
+</form>
 
-    <br>
-
-        <table class="table bg-success table-light">
-            <thead>
-                <tr>
-                    <th class="text-start">Name</th>
-                    <th class="text-end">Description</th>
-                    <th class="text-end">Complete by</th>
-                    <th class="text-end">Done</th>
-                    <th class="text-end">Edit</th>
-                    <th class="text-end">Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for task in tasks %}
-                <tr>
-                    <td class="text-start">
-                        {{ task.1 }}
-                    </td>
-                    <td class="text-end">
-                        {{ task.2 }}
-                    </td>
-                    <td class="text-end">
-                        {{ task.3 }}
-                    </td>
-                    <td class="text-end">
-                        <form action="/done" method="post">
-                            <input type="hidden" name="done" value="{{ task.0 }}">
-                            <button class="btn btn-outline-secondary" type="submit">Done</button>
-                        </form>
-                    </td>
-                    <td class="text-end">
-                        <form action="/edit" method="post">
-                            <input type="hidden" name="edit" value="{{ task.0 }}">
-                            <button class="btn btn-outline-secondary" type="submit">Edit</button>
-                        </form>
-                    </td>
-                    <td class="text-end">
-                        <form action="/delete" method="post">
-                            <input type="hidden" name="delete" value="{{ task.0 }}">
-                            <button class="btn btn-outline-secondary" type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<table class="table bg-success table-light">
+  <thead>
+    <tr>
+      <th class="text-start">Name</th>
+      <th class="text-end">Description</th>
+      <th class="text-end">Complete by</th>
+      <th class="text-end">Done</th>
+      <th class="text-end">Edit</th>
+      <th class="text-end">Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for task in tasks %}
+    <tr>
+      <td class="text-start">{{ task.1 }}</td>
+      <td class="text-end">{{ task.2 }}</td>
+      <td class="text-end">{{ task.3 }}</td>
+      <td class="text-end">
+        <form action="/done" method="post">
+          <input type="hidden" name="done" value="{{ task.0 }}" />
+          <button class="btn btn-outline-secondary" type="submit">Done</button>
+        </form>
+      </td>
+      <td class="text-end">
+        <form action="/edit" method="post">
+          <input type="hidden" name="edit" value="{{ task.0 }}" />
+          <button class="btn btn-outline-secondary" type="submit">Edit</button>
+        </form>
+      </td>
+      <td class="text-end">
+        <form action="/delete" method="post">
+          <input type="hidden" name="delete" value="{{ task.0 }}" />
+          <button class="btn btn-outline-secondary" type="submit">
+            Delete
+          </button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {% endblock %}
