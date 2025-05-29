@@ -21,20 +21,38 @@ def index():
         #retrieve input from user
         name = request.form.get("name")
         if not name:
-            tasks = db.execute("SELECT * FROM tasks ORDER BY time ASC")
+            tasks = db.execute("SELECT * FROM tasks ORDER BY CASE WHEN time='' THEN NULL ELSE time END NULLS LAST")
             return render_template("index.html", nameError = "Must enter name of task", tasks=tasks)
         description = request.form.get("description")
         date = request.form.get("date")
 
         db.execute("INSERT INTO tasks (name, description, time) VALUES (?, ?, ?)", (name, description, date))
         connection.commit()
-        tasks = db.execute("SELECT * FROM tasks ORDER BY time ASC")
+        tasks = db.execute("SELECT * FROM tasks ORDER BY CASE WHEN time='' THEN NULL ELSE time END NULLS LAST")
 
         return redirect ("/")
 
     else:
-        tasks = db.execute("SELECT * FROM tasks ORDER BY time ASC")
+        tasks = db.execute("SELECT * FROM tasks ORDER BY CASE WHEN time='' THEN NULL ELSE time END NULLS LAST")
         return render_template("index.html", tasks=tasks)
+    
+@app.route("/sort", methods=["POST"])
+def sort():
+    if request.method == "POST":
+        sortSelection = int(request.form['sort'])
+        if sortSelection == 1:
+            tasks = db.execute("SELECT * FROM tasks ORDER BY name COLLATE NOCASE ASC")
+            return render_template("index.html", tasks=tasks)
+        elif sortSelection == 2:
+           tasks = db.execute("SELECT * FROM tasks ORDER BY name COLLATE NOCASE DESC")
+           return render_template("index.html", tasks=tasks)
+        elif sortSelection == 3:
+            tasks = db.execute("SELECT * FROM tasks ORDER BY CASE WHEN time='' THEN NULL ELSE time END ASC NULLS LAST")
+            return render_template("index.html", tasks=tasks)
+        else: 
+            tasks = db.execute("SELECT * FROM tasks ORDER BY CASE WHEN time='' THEN NULL ELSE time END DESC NULLS LAST")
+
+            return render_template("index.html", tasks=tasks)
 
 @app.route("/history")
 def history():
@@ -83,7 +101,7 @@ def edit():
 @app.route("/updated", methods=["POST"])
 def updated():
     if request.method == "POST":
-        id = request.form['edit']
+        id = request.form['update']
         task = db.execute("SELECT * FROM tasks WHERE id = ?", [id])
         name = request.form.get("name")
         if not name:
